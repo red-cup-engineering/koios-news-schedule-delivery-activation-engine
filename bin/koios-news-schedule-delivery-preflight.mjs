@@ -23,7 +23,7 @@ const EFFECTS = Object.freeze(["provider-local-append-only-schedule", "provider-
 
 import { argument } from "@red-cup-engineering/javascript-node-services-section/argv";
 import { canonicalJson as canonical } from "@red-cup-engineering/json-services-section/canonical-json";
-import { ACTIVITYSTREAMS_CONTEXT } from "@red-cup-engineering/activitypub-services-section/activitystreams";
+import { ACTIVITYSTREAMS_CONTEXT } from "@red-cup-engineering/activitypub-engineering-services-section/activitystreams";
 import { semanticId } from "@red-cup-engineering/computer-content-engineering-services-section/semiotic-content-address";
 function requireString(value, label) { if (typeof value !== "string" || value === "") throw new Error(`${label} is required`); return value; }
 function integer(value, label, min, max) { const number = Number(value); if (!Number.isInteger(number) || number < min || number > max) throw new Error(`${label} must be an integer from ${min} to ${max}`); return number; }
