@@ -21,8 +21,8 @@ const DELIVERY_CAPABILITY = "urn:capability:koios-news:cold-red-gate:routine-pub
 const EFFECTS = Object.freeze(["provider-local-append-only-schedule", "provider-local-occurrence-reservation", "exact-advertised-target-operation-invocation"]);
 
 
-import { argument } from "@red-cup-engineering/javascript-node-services-section/argv";
-import { canonicalJson as canonical } from "@red-cup-engineering/json-services-section/canonical-json";
+import { argument } from "@red-cup-engineering/javascript-node-engineering-services-section/argv";
+import { canonicalJson as canonical } from "@red-cup-engineering/json-engineering-services-section/canonical-json";
 import { ACTIVITYSTREAMS_CONTEXT } from "@red-cup-engineering/activitypub-engineering-services-section/activitystreams";
 import { semanticId } from "@red-cup-engineering/computer-content-engineering-services-section/semiotic-content-address";
 function requireString(value, label) { if (typeof value !== "string" || value === "") throw new Error(`${label} is required`); return value; }
