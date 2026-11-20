@@ -48,7 +48,7 @@ function solicitation() {
   return Object.freeze({ "@context": ACTIVITYSTREAMS_CONTEXT, id: semanticId({ kind: "solicitation", sourceActivity }), type: "Offer", actor: KOIOS_ACTOR, target: PROVIDER, object });
 }
 
-function checkRequest(value) {
+function checkSolicitation(value) {
   if (value?.["@context"] !== ACTIVITYSTREAMS_CONTEXT || value?.type !== "Offer" || value?.actor !== KOIOS_ACTOR || value?.target !== PROVIDER || value?.object?.type !== "ServiceSolicitation") throw new Error("solicitation is not an ActivityStreams Offer<ServiceSolicitation> from Koios to the retained provider");
   const source = value.object.sourceActivity, request = source?.object?.attachment?.find?.((item) => item?.type === "ScheduledActivityDeliveryRequest");
   if (source?.["@context"] !== ACTIVITYSTREAMS_CONTEXT || typeof source?.id !== "string" || source.type !== "Create" || source.actor !== KOIOS_ACTOR || source.target !== PROVIDER || source.object?.type !== "Note" || !request) throw new Error("solicitation source activity does not carry one ScheduledActivityDeliveryRequest");
@@ -57,12 +57,12 @@ function checkRequest(value) {
 }
 
 function verifyOffer() {
-  const requestValue = readJson(argument("--solicitation"), "solicitation");
+  const solicitationValue = readJson(argument("--solicitation"), "solicitation");
   const offer = readJson(argument("--offer"), "offer");
-  const { source, request } = checkRequest(requestValue);
+  const { source, request } = checkSolicitation(solicitationValue);
   const body = offer?.object;
   if (offer?.["@context"] !== ACTIVITYSTREAMS_CONTEXT || offer?.type !== "Offer" || offer?.actor !== PROVIDER || offer?.target !== KOIOS_ACTOR || typeof offer?.id !== "string" || body?.type !== "ExecutableServiceOffer" || body.contract !== PROVIDER_CONTRACT || body.sourceActivity !== source.id || body.customer !== KOIOS_ACTOR || !same(body.request, request) || typeof body.requestDigest !== "string" || !body.requestDigest.startsWith("ni:///sha-256;") || typeof body.scheduleId !== "string" || !body.scheduleId.startsWith("ni:///sha-256;") || !same(body.effects, EFFECTS) || body.operation !== "invoke-service" || !same(body.targetBinding, TARGET_BINDING)) throw new Error("offer does not satisfy the current ScheduleDelivery ExecutableServiceOffer law for this solicitation and target runtime closure");
-  return { type: "KoiosScheduleDeliveryOfferPreflight", providerContract: PROVIDER_CONTRACT, solicitationId: requestValue.id, offerId: offer.id, offerLawShapeVerified: true, targetBindingVerified: true, targetBinding: TARGET_BINDING, providerAuthorityAuthenticated: false, acceptanceProduced: false, activationPermitted: false, blockers: ["Provider witnessed offer emission is unavailable to this local chassis.", "No authenticated customer signing authority is available to create the required ServiceContract acceptance.", "No timer, credential, schedule registration, candidate, or release was created."] };
+  return { type: "KoiosScheduleDeliveryOfferPreflight", providerContract: PROVIDER_CONTRACT, solicitationId: solicitationValue.id, offerId: offer.id, offerLawShapeVerified: true, targetBindingVerified: true, targetBinding: TARGET_BINDING, providerAuthorityAuthenticated: false, acceptanceProduced: false, activationPermitted: false, blockers: ["Provider witnessed offer emission is unavailable to this local chassis.", "No authenticated customer signing authority is available to create the required ServiceContract acceptance.", "No timer, credential, schedule registration, candidate, or release was created."] };
 }
 
 try {
